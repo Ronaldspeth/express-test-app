@@ -1,8 +1,14 @@
 var express = require('express');
 var router = express.Router();
+
+const bodyParser = require("body-parser");
 const fs = require('fs');
 
 const studentData = JSON.parse(fs.readFileSync('./data/studentData.json'));
+
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   //res.send('respond with a resource');
@@ -36,5 +42,35 @@ router.get('/:id', function (req, res, next) {
   res.send(oneStudent)
   }
 });
+
+router.post("/", function (req, res) {
+    let result;
+    const newGrade = req.body;
+    if (
+      newGrade.studentId &&
+      newGrade.className &&
+      newGrade.grade 
+    ) {
+      //reviews.push({
+      //  email: review.email,
+      //  movieId: review.movieId,
+      //  reviewTitle: review.reviewTitle,
+      //  reviewText: review.reviewText,
+      //});
+  
+      result = {
+        status: "success",
+        message: "This grade data has been successfully added",
+      };
+    } else {
+      result = {
+        status: "failed",
+        message: "The grade data has not been added",
+      };
+      res.status(400);
+    }
+  
+    res.json(result);
+  });
 
 module.exports = router;
